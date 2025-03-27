@@ -34,9 +34,9 @@ extern "Rust" {
     fn my_demo_function_alias(a: u32) -> u32;
 }
 
-mod Foo {
+mod foo {
     // No `extern` equals `extern "Rust"`.
-    fn my_demo_function(a: u32) -> u32 {
+    pub fn my_demo_function(a: u32) -> u32 {
         a
     }
 }
@@ -44,6 +44,8 @@ mod Foo {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use foo::my_demo_function;
+    use foo::my_demo_function as my_demo_function_alias;
 
     #[test]
     fn test_success() {
