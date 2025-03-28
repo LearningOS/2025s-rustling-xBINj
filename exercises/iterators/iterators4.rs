@@ -3,7 +3,7 @@
 // Execute `rustlings hint iterators4` or use the `hint` watch subcommand for a
 // hint.
 
-// I AM NOT DONE
+// I AM DONE: xBINj
 
 pub fn factorial(num: u64) -> u64 {
     // Complete this function to return the factorial of num
@@ -15,6 +15,19 @@ pub fn factorial(num: u64) -> u64 {
     // For an extra challenge, don't use:
     // - recursion
     // Execute `rustlings hint iterators4` for hints.
+    /*let mut v = Vec::new();
+    for i in 2..=num {
+        v.push(i);
+    }
+
+    let mut total = 1;
+    for i in v.into_iter() {
+        total *= i;
+    }
+
+    total*/
+
+    (1..=num).fold(1, |acc, x| acc * x)
 }
 
 #[cfg(test)]
@@ -38,5 +51,10 @@ mod tests {
     #[test]
     fn factorial_of_4() {
         assert_eq!(24, factorial(4));
+    }
+
+    #[test]
+    fn factorial_of_8() {
+        assert_eq!(40320, factorial(8));
     }
 }
