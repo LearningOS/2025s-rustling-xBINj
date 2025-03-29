@@ -2,7 +2,7 @@
 	single linked list merge
 	This problem requires you to merge two ordered singly linked lists into one ordered singly linked list
 */
-// I AM NOT DONE
+// I AM DONE: xBINj
 
 use std::fmt::{self, Display, Formatter};
 use std::ptr::NonNull;
@@ -45,7 +45,7 @@ impl<T> LinkedList<T> {
     }
 
     pub fn add(&mut self, obj: T) {
-        let mut node = Box::new(Node::new(obj));
+        /*let mut node = Box::new(Node::new(obj));
         node.next = None;
         let node_ptr = Some(unsafe { NonNull::new_unchecked(Box::into_raw(node)) });
         match self.end {
@@ -53,11 +53,20 @@ impl<T> LinkedList<T> {
             Some(end_ptr) => unsafe { (*end_ptr.as_ptr()).next = node_ptr },
         }
         self.end = node_ptr;
+        self.length += 1;*/
+        let node = Box::new(Node::new(obj));
+        let node_ptr = NonNull::new(Box::into_raw(node)).unwrap();
+        match self.end {
+            None => self.start = Some(node_ptr),
+            Some(end_ptr) => unsafe { (*end_ptr.as_ptr()).next = Some(node_ptr) },
+        }
+        self.end = Some(node_ptr);
         self.length += 1;
     }
 
     pub fn get(&mut self, index: i32) -> Option<&T> {
         self.get_ith_node(self.start, index)
+
     }
 
     fn get_ith_node(&mut self, node: Option<NonNull<Node<T>>>, index: i32) -> Option<&T> {
@@ -69,15 +78,35 @@ impl<T> LinkedList<T> {
             },
         }
     }
-	pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self
-	{
+	pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self 
+    where T: Ord + Copy {
 		//TODO
-		Self {
-            length: 0,
-            start: None,
-            end: None,
+		let mut merged_list = LinkedList::new();
+        let mut current_a = list_a.start;
+        let mut current_b = list_b.start;
+
+        while let (Some(node_a), Some(node_b)) = (current_a, current_b) {
+            if unsafe { &(*node_a.as_ptr()).val <= &(*node_b.as_ptr()).val } {
+                merged_list.add(unsafe { (*node_a.as_ptr()).val });
+                current_a = unsafe { (*node_a.as_ptr()).next };
+            } else {
+                merged_list.add(unsafe { (*node_b.as_ptr()).val });
+                current_b = unsafe { (*node_b.as_ptr()).next };
+            }
         }
-	}
+
+        while let Some(node) = current_a {
+            merged_list.add(unsafe { (*node.as_ptr()).val });
+            current_a = unsafe { (*node.as_ptr()).next };
+        }
+
+        while let Some(node) = current_b {
+            merged_list.add(unsafe { (*node.as_ptr()).val });
+            current_b = unsafe { (*node.as_ptr()).next };
+        }
+
+        merged_list
+    }
 }
 
 impl<T> Display for LinkedList<T>
